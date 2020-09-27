@@ -23,19 +23,36 @@ import java.io.*;
 
 public final class TDengineHttpClientIT {
 
+    private String host = "40.73.33.53";
+    private int port = 6041;
+    private String user = "test";
+    private String pwd = "123456";
+    private int timeout = 3000;
+    private String database = "testdb";
+    private String prefix = "testmqtt";
+
     @Test
     @Timeout(value = 1, unit = TimeUnit.MINUTES)
     void test_auth_server() throws Exception {
         
-        TDengineHttpClient client = new TDengineHttpClient("40.73.33.53", 6041, "test", "123456", 3000, "testdb", "testmqtt");
+        TDengineHttpClient client = new TDengineHttpClient(host, port, user, pwd, timeout, database, prefix);
         assertTrue(!client.getAuthToken().equals("")); 
     }
     
     @Test
     @Timeout(value = 1, unit = TimeUnit.MINUTES)
     void test_sql_execute_remotely() throws Exception {
-        TDengineHttpClient client = new TDengineHttpClient("40.73.33.53", 6041, "test", "123456", 3000, "testdb", "testmqtt");
+        TDengineHttpClient client = new TDengineHttpClient(host, port, user, pwd, timeout, database, prefix);
         String result = client.executeSQL("SELECT * FROM abc;");
+        assertTrue(!result.equals("")); 
+    }
+
+    @Test
+    @Timeout(value = 1, unit = TimeUnit.MINUTES)
+    void test_sql_create_table() throws Exception {
+        TDengineHttpClient client = new TDengineHttpClient(host, port, user, pwd, timeout, database, prefix);
+        String result = client.CreateSuperTable();
+        result = client.executeSQL("select * from mqtt_msg;");
         assertTrue(!result.equals("")); 
     }
 }
