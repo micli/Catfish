@@ -1,4 +1,8 @@
 com/github/micli/catfish/TDengineListener.class
 com/github/micli/catfish/TDengineMain.class
+com/github/micli/catfish/configuration/TDengineConfiguration.class
+com/github/micli/catfish/configuration/PropertiesReader.class
+com/github/micli/catfish/TDengineHttpClient.class
 com/github/micli/catfish/TDengineListener$1.class
+com/github/micli/catfish/TDengineAuthResult.class
 com/github/micli/catfish/TDengineInterceptor.class

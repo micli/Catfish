@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-// package com.hivemq;
 package com.github.micli.catfish;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
