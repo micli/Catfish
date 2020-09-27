@@ -3,5 +3,6 @@
 /Users/micl/Documents/Catfish/hivemq-tdengine-extension/src/main/java/com/github/micli/catfish/TDengineMain.java
 /Users/micl/Documents/Catfish/hivemq-tdengine-extension/src/main/java/com/github/micli/catfish/TDengineListener.java
 /Users/micl/Documents/Catfish/hivemq-tdengine-extension/src/main/java/com/github/micli/catfish/TDengineAuthResult.java
+/Users/micl/Documents/Catfish/hivemq-tdengine-extension/src/main/java/com/github/micli/catfish/TDengineQueryResult.java
 /Users/micl/Documents/Catfish/hivemq-tdengine-extension/src/main/java/com/github/micli/catfish/configuration/PropertiesReader.java
 /Users/micl/Documents/Catfish/hivemq-tdengine-extension/src/main/java/com/github/micli/catfish/configuration/TDengineConfiguration.java

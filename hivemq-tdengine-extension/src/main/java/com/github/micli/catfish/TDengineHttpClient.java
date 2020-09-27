@@ -1,6 +1,4 @@
 
-
-
 package com.github.micli.catfish;
 
 import java.net.URI;
@@ -10,8 +8,9 @@ import org.apache.http.util.EntityUtils;
 // import org.apache.http.HttpResponse;
 // import org.apache.http.NameValuePair;
 // import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -54,8 +53,8 @@ public class TDengineHttpClient {
         This function used for retrieve access token from server by username and password.
     */
     public String getAccessToken() throws Exception {
-        if("" == this.username || "" == this.password)
-        return "";
+        if(this.username.equals("") || this.password.equals(""))
+            return "";
         URI uri = new URIBuilder()
         .setScheme("http")
         .setHost(serverHost + ":" + String.valueOf(serverPort))
@@ -68,9 +67,9 @@ public class TDengineHttpClient {
         httpGet.addHeader("Content-Type", "application/json");
         httpGet.addHeader("Accept", "application/json");
         try {
-            //发起请求
+            // Send request.
             CloseableHttpResponse response = client.execute(httpGet);
-            //获得请求状态码
+            // Retrieve status code from response line.
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == 200) {
             //获得请求实体
@@ -78,7 +77,7 @@ public class TDengineHttpClient {
             String result = EntityUtils.toString(entity, "utf-8");
             TDengineAuthResult authResult = JSON.parseObject(result, TDengineAuthResult.class);
             if(authResult.getStatus().equals("succ")) {
-                return authResult.getDesc();
+                return "Taosd " + authResult.getDesc();
             }
         }
         } catch (Exception e) {
@@ -91,7 +90,42 @@ public class TDengineHttpClient {
 
     }
 
-    private String executeSQL(String sqlStatement) throws Exception {
+    public String executeSQL(String sqlStatement) throws Exception {
+        
+        if(this.getAuthToken().equals("") || sqlStatement.equals(""))
+            return "";
+        
+        URI uri = new URIBuilder()
+        .setScheme("http")
+        .setHost(serverHost + ":" + String.valueOf(serverPort))
+        .setPath("/rest/sql")
+        .build();
+        CloseableHttpClient client = HttpClients.createDefault();
+        // Post Url
+        HttpPost thePost = new HttpPost(uri);
+        // Headers
+        thePost.addHeader("Content-Type", "application/json");
+        thePost.addHeader("Accept", "application/json");
+        thePost.addHeader("Authorization", this.accessToken);
+        thePost.setEntity(new StringEntity(buildSqlStatements(sqlStatement), "utf-8"));
+        try{
+            // Send request.
+            CloseableHttpResponse response = client.execute(thePost);
+            // Retrieve status code from response line.
+            int statusCode = response.getStatusLine().getStatusCode();
+            if(200 == statusCode){
+                HttpEntity entity = response.getEntity();
+                String result = EntityUtils.toString(entity, "utf-8");
+                return result;               
+            }
+        }catch(Exception ex){
+            return "";
+        }
         return "";
+    }
+
+
+    private String buildSqlStatements(String sql) {
+        return "use " + database + "; " + sql;
     }
 }

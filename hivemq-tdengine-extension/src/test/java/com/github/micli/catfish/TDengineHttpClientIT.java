@@ -24,19 +24,18 @@ import java.io.*;
 public final class TDengineHttpClientIT {
 
     @Test
-    @Timeout(value = 5, unit = TimeUnit.MINUTES)
+    @Timeout(value = 1, unit = TimeUnit.MINUTES)
     void test_auth_server() throws Exception {
         
         TDengineHttpClient client = new TDengineHttpClient("40.73.33.53", 6041, "test", "123456", 3000, "testdb", "testmqtt");
-
-
-        assertTrue(client.getAuthToken() != "");
-        
-        //把标准输出定向至ByteArrayOutputStream中
-        final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        //对控制台的输出进行部分匹配断言
-        // assertThat(client.getAuthToken());
-        }
+        assertTrue(!client.getAuthToken().equals("")); 
+    }
+    
+    @Test
+    @Timeout(value = 1, unit = TimeUnit.MINUTES)
+    void test_sql_execute_remotely() throws Exception {
+        TDengineHttpClient client = new TDengineHttpClient("40.73.33.53", 6041, "test", "123456", 3000, "testdb", "testmqtt");
+        String result = client.executeSQL("SELECT * FROM abc;");
+        assertTrue(!result.equals("")); 
+    }
 }
