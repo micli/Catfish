@@ -18,31 +18,47 @@
 package com.github.micli.catfish;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.extension.sdk.api.client.parameter.ClientInformation;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.parameter.PublishInboundInput;
 import com.hivemq.extension.sdk.api.interceptor.publish.parameter.PublishInboundOutput;
 import com.hivemq.extension.sdk.api.packets.publish.ModifiablePublishPacket;
 
+import java.util.Base64;
+import java.util.Optional;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 /**
- * This is a very simple {@link PublishInboundInterceptor},
- * it changes the payload of every incoming PUBLISH with the topic 'hello/world' to 'Hello World!'.
+ * This is a very simple {@link PublishInboundInterceptor}, it changes the
+ * payload of every incoming PUBLISH with the topic 'hello/world' to 'Hello
+ * World!'.
  *
  * @author Yannick Weber
  * @since 4.3.1
  */
 public class TDengineInterceptor implements PublishInboundInterceptor {
 
+    final private Base64.Encoder encoder = Base64.getEncoder();
+
     @Override
-    public void onInboundPublish(final @NotNull PublishInboundInput publishInboundInput, final @NotNull PublishInboundOutput publishInboundOutput) {
+    public void onInboundPublish(final @NotNull PublishInboundInput publishInboundInput,
+            final @NotNull PublishInboundOutput publishInboundOutput) {
         final ModifiablePublishPacket publishPacket = publishInboundOutput.getPublishPacket();
-        if ("hello/world".equals(publishPacket.getTopic())) {
-            final ByteBuffer payload = ByteBuffer.wrap("Hello World!".getBytes(StandardCharsets.UTF_8));
-            publishPacket.setPayload(payload);
-            
+        final ClientInformation clientInformation = publishInboundInput.getClientInformation();
+
+        try {
+            String msgid = String.valueOf(publishPacket.getPacketId());
+            String topic = publishPacket.getTopic();
+            String deviceId = clientInformation.getClientId();
+            Optional<ByteBuffer> buff = publishPacket.getPayload();
+            String payLoad = encoder.encodeToString(buff.get().array());
+            int qos = publishPacket.getQos().getQosNumber();
+
+            TDengineMain.client.WriteData(msgid, deviceId, topic, qos, payLoad);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        
     }
 
 }

@@ -17,13 +17,10 @@ package com.github.micli.catfish.configuration;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -41,28 +38,18 @@ public class TDengineConfiguration extends PropertiesReader {
 
     private static final String HOST = "host";
     private static final String PORT = "port";
-    // private static final String MODE = "mode";
-    // private static final String MODE_DEFAULT = "http";
-    // private static final String PROTOCOL = "protocol";
-    // private static final String PROTOCOL_DEFAULT = "http";
     private static final String REPORTING_INTERVAL = "reportingInterval";
     private static final int REPORTING_INTERVAL_DEFAULT = 1;
     private static final String PREFIX = "prefix";
-    private static final String PREFIX_DEFAULT = "device";
+    private static final String PREFIX_DEFAULT = "mqtt_msg";
     private static final String DATABASE = "database";
-    private static final String DATABASE_DEFAULT = "hivemq";
-    private static final String DATABASE_USER = "";
+    private static final String DATABASE_DEFAULT = "testdb";
+    private static final String DATABASE_USER = "user";
+    private static final String DATABASE_USER_DEFAULT = "root";   
     private static final String DATABASE_PASSWORD = "";
+    private static final String DATABASE_PASSWORD_DEFAULT = "taosdata";  
     private static final String CONNECT_TIMEOUT = "connectTimeout";
     private static final int CONNECT_TIMEOUT_DEFAULT = 5000;
-    // private static final String AUTH = "auth";
-    private static final String TAGS = "tags";
-    private static final HashMap<String, String> TAGS_DEFAULT = new HashMap<>();
-
-    //TDengine Cloud
-    // private static final String BUCKET = "bucket";
-    // private static final String ORGANIZATION = "organization";
-
 
     public TDengineConfiguration(@NotNull final File configFilePath) {
         super(configFilePath);
@@ -78,6 +65,8 @@ public class TDengineConfiguration extends PropertiesReader {
 
         countError += checkMandatoryProperty(HOST);
         countError += checkMandatoryProperty(PORT);
+        countError += checkMandatoryProperty(DATABASE);
+        countError += checkMandatoryProperty(PREFIX);
 
         if (countError != 0){
             return false;
@@ -127,11 +116,6 @@ public class TDengineConfiguration extends PropertiesReader {
     }
 
 
-    // @NotNull
-    // public String getMode() {
-    //     return validateStringProperty(MODE, MODE_DEFAULT);
-    // }
-
     @Nullable
     public String getHost() {
         return getProperty(HOST);
@@ -165,62 +149,20 @@ public class TDengineConfiguration extends PropertiesReader {
         return validateIntProperty(CONNECT_TIMEOUT, CONNECT_TIMEOUT_DEFAULT, false, false);
     }
 
-    // @NotNull
-    // public String getProtocol() {
-    //     final String protocol = getProperty(PROTOCOL);
-    //     if (protocol == null) {
-    //         if (getMode().equals("http")) {
-    //             log.warn("No protocol configured for TDengine, using default: {}", PROTOCOL_DEFAULT);
-    //             return PROTOCOL_DEFAULT;
-    //         }
-    //     }
-    //     return protocol;
-    // }
-
     @NotNull
     public String getPrefix() {
         return validateStringProperty(PREFIX, PREFIX_DEFAULT);
     }
 
-    // @Nullable
-    // public String getAuth() {
-    //     return getProperty(AUTH);
-    // }
-
-    @NotNull
-    public Map<String, String> getTags() {
-
-        final String tags = getProperty(TAGS);
-        if (tags == null) {
-            return TAGS_DEFAULT;
-        }
-
-        final String[] split = StringUtils.splitPreserveAllTokens(tags, ";");
-
-        final HashMap<String, String> tagMap = new HashMap<>();
-
-        for (String tag : split) {
-            final String[] tagPair = StringUtils.split(tag, "=");
-            if (tagPair.length != 2 || tagPair[0].length() < 1 || tagPair[1].length() < 1) {
-                log.warn("Invalid tag format {} for TDengine", tag);
-                continue;
-            }
-
-            tagMap.put(tagPair[0], tagPair[1]);
-        }
-
-        return tagMap;
+    @Nullable
+    public String getUsername() {
+        return validateStringProperty(DATABASE_USER, DATABASE_USER_DEFAULT);
     }
 
-    // @Nullable
-    // public String getBucket() {
-    //     return getProperty(BUCKET);
-    // }
-
-    // @Nullable
-    // public String getOrganization() {
-    //     return getProperty(ORGANIZATION);
-    // }
+    @Nullable
+    public String getPassword() {
+        return validateStringProperty(DATABASE_PASSWORD, DATABASE_PASSWORD_DEFAULT);
+    }
 
     @Override
     public String getFilename() {
