@@ -275,8 +275,8 @@ public class TDengineHttpClient {
                 // Retrieve status code from response line.
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (200 == statusCode) {
-                    final HttpEntity entity = response.getEntity();
-                    final String result = EntityUtils.toString(entity, defaultEncode);
+                    // final HttpEntity entity = response.getEntity();
+                    // final String result = EntityUtils.toString(entity, defaultEncode);
                     // Close request object.
                     requestClient.close();
                 }

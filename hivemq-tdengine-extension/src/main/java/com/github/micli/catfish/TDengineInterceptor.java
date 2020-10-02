@@ -53,7 +53,7 @@ public class TDengineInterceptor implements PublishInboundInterceptor {
             Optional<ByteBuffer> buff = publishPacket.getPayload();
             String payLoad = encoder.encodeToString(buff.get().array());
             int qos = publishPacket.getQos().getQosNumber();
-
+            // Save data to TDengine.
             TDengineMain.client.WriteData(msgid, deviceId, topic, qos, payLoad);
         } catch (Exception e) {
             e.printStackTrace();

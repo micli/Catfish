@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Yannick Weber
  * @since 4.3.1
  */
-class TDengineInterceptorIT {
+public class TDengineInterceptorIT {
 
     @RegisterExtension
     public final @NotNull HiveMQTestContainerExtension extension =
