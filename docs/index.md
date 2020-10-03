@@ -1,17 +1,22 @@
-![catfish logo](docs/images/catfish-logo.png)
+![catfish logo](./images/catfish-logo.png)
 
 # TDengine Extension of HiveMQ (Codename: Catfish)
 
 This is a HiveMQ extension that supports data save to TDEngine.
 
-Documentation is [**HERE**](docs/index.md).
+For Chinese user, please read [中文版本](index_cn.md).
+
+Content:
+
++ [Design document](design.md)
++ [Testing Report](testing.md)
 
 ## Deployment
 
 1. Please download hivemq-tdengine-extension-1.0-distribution.zip from releases.
 2. Unzip the file: hivemq-tdengine-extension-1.0-distribution.zip on local folder.
 3. Put the whole folder into {HIVEMQHOME}/extensions/ as below:
-![extensions folder layout](docs/images/extension-folder.png)
+![extensions folder layout](./images/extension-folder.png)
 4. Create a configuration file named "TDengine.properties" under hivemq-tdengine-extension. The template as below:
 
 TDengine.properties
@@ -65,7 +70,7 @@ Please don't worry about TDengine exetsion overrwites these configurations. Beca
 
 The TDengine extension uses REST APIs to communicate to TDengine service. By default, there are only 2 threads serve HTTP traffic. If you have a heavy MQTT traffic, please add the number of httMaxThreads.
 
-![taos.cfg](docs/images/tsos.cfg.png)
+![taos.cfg](./images/tsos.cfg.png)
 
 For details, please review:
 [TDengine Documentation](https://www.taosdata.com/en/documentation/administrator/#Configuration-on-Server)
