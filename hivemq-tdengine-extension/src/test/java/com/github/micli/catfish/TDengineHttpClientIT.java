@@ -4,13 +4,17 @@ package com.github.micli.catfish;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.alibaba.fastjson.JSON;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -113,6 +117,15 @@ public final class TDengineHttpClientIT {
         // Row count after insert.
         int count2 = Integer.parseInt(result2.getData()[0][0]);
         assertTrue(count2 > count1);
+    }
+
+    @Test
+    @Timeout(value = 1, unit = TimeUnit.MINUTES)
+    void test_base64_encode() throws Exception {
+        byte[] bytes = new byte[]{3, 12, 24, 57, 22, 63, 45, 22, 77};
+        ByteBuffer test = ByteBuffer.wrap(bytes);
+        String result = Base64.getEncoder().encodeToString(test.array());
+        assertTrue(result.length() > 0);
     }
     
 }

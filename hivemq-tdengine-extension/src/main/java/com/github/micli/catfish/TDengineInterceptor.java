@@ -51,7 +51,10 @@ public class TDengineInterceptor implements PublishInboundInterceptor {
             String topic = publishPacket.getTopic();
             String deviceId = clientInformation.getClientId();
             Optional<ByteBuffer> buff = publishPacket.getPayload();
-            String payLoad = encoder.encodeToString(buff.get().array());
+            String payLoad = "";
+            byte[] bytes = buff.get().array().clone();
+            payLoad = encoder.encodeToString(bytes);
+            // String payLoad = encoder.encodeToString(buff.get().array().clone());
             int qos = publishPacket.getQos().getQosNumber();
             // Save data to TDengine.
             TDengineMain.client.WriteData(msgid, deviceId, topic, qos, payLoad);

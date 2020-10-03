@@ -6,54 +6,45 @@
 :hivemq-support: http://www.hivemq.com/support/
 :hivemq-testcontainer: https://github.com/hivemq/hivemq-testcontainer
 :hivemq-mqtt-client: https://github.com/hivemq/hivemq-mqtt-client
+:catfish-repo: https://www.github.com/micli/Catfish
+:taosdata-doc: https://www.taosdata.com/en/documentation/
 
-== HiveMQ 4 Hello World Extension
+== HiveMQ TDengine Extension (Codename: Catfish)
 
-*Type*: Demonstration Extension
+*Type*: Data Persistent Extension
 
-*Version*: 4.3.1
+*Version*: 0.1
 
-*License*: Apache License Version 2.0
+*License*: MIT
 
 === Purpose
 
-This Hello World extension sets a ClientLifecycleEventListener which logs
-the MQTT Version and identifier of every connecting and disconnecting client and
-registers a PublishInboundInterceptor to modify the payload of every Publish with the topic 'hello/world' to 'Hello World!'.
+This TDengine extension is used for save mqtt data to TDengine database.
 
-There is {hivemq-extension-docs-archetype-link}[a Maven Archetype available]
-to generate a basic extension from the IDE.
+Base on read the {hivemq-extension-docs-link}[HiveMQ Extension Documentation] to grasp the core concepts of HiveMQ extension development. It implements PublishInboundInterceptor interface and retrieves mqtt message from onInboundPublish function.
 
-We strongly recommend to read the {hivemq-extension-docs-link}[HiveMQ Extension Documentation]
-to grasp the core concepts of HiveMQ extension development.
+The TDengineHttpClient implements REST API communication to TDengine service. 
+
 
 === Installation
 
 . Clone this repository into a Java 11 maven project.
 . Run `mvn package` goal from Maven to build the extension.
-. Move the file: "target/hivemq-hello-world-extension-4.3.1-distribution.zip" to the directory: "HIVEMQ_HOME/extensions"
+. Move the file: "target/hivemq-tdengine-extension-0.1-distribution.zip" to the directory: "HIVEMQ_HOME/extensions"
 . Unzip the file.
-. Start HiveMQ.
+. Configure correct TDengine connect information in TDengine.properties.
+. Start HiveMQ by HIVEMQ_HOME/bin/run.sh.
 
-=== First Steps
-
-==== Manual Testing
+=== Manual Testing
 
 Connect with an {hivemq-blog-tools}[MQTT client] of your choice. You should see a log message with its identifier and MQTT version.
 
-==== Automatic Testing
-
-Execute the `TDengineInterceptorIT` for automatic testing of the extension.
-It uses the {hivemq-testcontainer}[HiveMQ Testcontainer] to automatically package, deploy and run the extension inside a HiveMQ docker container.
-The test creates a {hivemq-mqtt-client}[HiveMQ MQTT Client] to publish and receive a message with the topic 'hello/world'.
-It checks whether the payload has been changed correctly to 'Hello World!'.
-
-=== Next steps
-
-Awesome, you got your first HiveMQ 4 extension working.
-
-Now read the {hivemq-extension-docs-link}[HiveMQ Extension Documentation] to see what extensions can do.
 
 === Need help?
 
+Please visit {catfish-repo}[*code repository*] on GitHub.
+
+TDengine documentation is {taosdata-doc}[*HERE*].
+
 If you encounter any problems, we are happy to help. The best place to get in contact is our {hivemq-support}[support].
+

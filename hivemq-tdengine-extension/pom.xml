@@ -32,7 +32,6 @@
         <output.dir>${basedir}</output.dir>
         <source.document.name>README.adoc</source.document.name>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.hivemq</groupId>
