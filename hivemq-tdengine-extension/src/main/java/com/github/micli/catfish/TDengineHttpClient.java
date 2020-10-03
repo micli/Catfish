@@ -71,7 +71,7 @@ public class TDengineHttpClient {
     private final String defaultEncode = "utf-8";
 
     private RequestConfig defaultRequestConfig = null;
-    private static final Logger log = LoggerFactory.getLogger(TDengineMain.class);
+    private static final Logger log = LoggerFactory.getLogger(TDengineHttpClient.class);
     private HashMap<String, String> deviceMap = new HashMap<String, String>(); 
 
     public TDengineHttpClient(final String host, final int port, final String username, final String password,
@@ -118,15 +118,16 @@ public class TDengineHttpClient {
             final CloseableHttpResponse response = client.execute(httpGet);
             // Retrieve status code from response line.
             final int statusCode = response.getStatusLine().getStatusCode();
+            final HttpEntity entity = response.getEntity();
+            final String result = EntityUtils.toString(entity, defaultEncode);
             if (statusCode == 200) {
-                final HttpEntity entity = response.getEntity();
-                final String result = EntityUtils.toString(entity, defaultEncode);
                 final TDengineAuthResult authResult = JSON.parseObject(result, TDengineAuthResult.class);
                 if (authResult.getStatus().equals("succ")) {
                     return "Taosd " + authResult.getDesc();
                 }
             }
         } catch (final Exception e) {
+            log.error("getAccessToken() error: {}", e);
             return "";
         }
         return "";
@@ -160,7 +161,7 @@ public class TDengineHttpClient {
             database, tableName, timeString, msgid, topic, qos, payLoad);
             executeSQL(sqlInsert);
         } catch (Exception ex) {
-
+            log.error("writeData error: {}", ex);
         }
 
     }
@@ -174,10 +175,12 @@ public class TDengineHttpClient {
         executeSQL(sqlUseDb);       
     }
     private boolean tableExists(final String tableName) throws Exception {
-        final String sqlTableExists = String.format(TDengineSQLCmdList.getDescTable(), tableName);
+        final String sqlTableExists = String.format(TDengineSQLCmdList.getGetSubTable(), database, tableName);
         String result = executeSQL(sqlTableExists);
         if(result.length() > 0) {
             TDengineQueryResult tdResult = TDengineQueryResult.GetResult(result);
+            if(!tdResult.getStatus().equals("succ"))
+                return false;
             if(null != tdResult) {
                 return tdResult.getRows() > 0 ? true : false;
             }
@@ -227,8 +230,10 @@ public class TDengineHttpClient {
      */
     public String executeSQL(final String sqlStatement) throws Exception {
 
-        if (this.getAuthToken().equals("") || sqlStatement.equals(""))
+        if (this.getAuthToken().equals("") || sqlStatement.equals("")) {
+            log.warn("Access token is empty. Any actions will be failed!");
             return "";
+        }
 
         final URI uri = new URIBuilder().setScheme("http").setHost(serverHost + ":" + String.valueOf(serverPort))
                 .setPath("/rest/sql").build();
@@ -245,9 +250,10 @@ public class TDengineHttpClient {
             final CloseableHttpResponse response = client.execute(thePost);
             // Retrieve status code from response line.
             final int statusCode = response.getStatusLine().getStatusCode();
+            final HttpEntity entity = response.getEntity();
+            final String result = EntityUtils.toString(entity, defaultEncode);
+            log.info("Execute SQL statement: {} Result: {}", sqlStatement, result);
             if (200 == statusCode) {
-                final HttpEntity entity = response.getEntity();
-                final String result = EntityUtils.toString(entity, defaultEncode);
                 return result;
             }
         } catch (final Exception ex) {
