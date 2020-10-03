@@ -46,7 +46,7 @@ public class TDengineConfiguration extends PropertiesReader {
     private static final String DATABASE_DEFAULT = "testdb";
     private static final String DATABASE_USER = "user";
     private static final String DATABASE_USER_DEFAULT = "root";   
-    private static final String DATABASE_PASSWORD = "";
+    private static final String DATABASE_PASSWORD = "password";
     private static final String DATABASE_PASSWORD_DEFAULT = "taosdata";  
     private static final String CONNECT_TIMEOUT = "connectTimeout";
     private static final int CONNECT_TIMEOUT_DEFAULT = 5000;
