@@ -16,7 +16,7 @@ Documentation is [**HERE**](docs/index.md).
 
 TDengine.properties
 ```shell
-host: {TDengine Server IP/hosename}
+host: {TDengine Server IP/hostname}
 port:6041
 user: {TDengine account}
 password:{password}
