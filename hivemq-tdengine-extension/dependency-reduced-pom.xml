@@ -6,14 +6,6 @@
   <version>0.1</version>
   <description>HiveMQ 4 Catfith Extension - an extension that supports save MQTT data to TDengine database.</description>
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>TDengine.properties</include>
-        </includes>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
