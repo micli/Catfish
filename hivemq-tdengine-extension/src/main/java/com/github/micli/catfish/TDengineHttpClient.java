@@ -49,7 +49,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import com.alibaba.fastjson.JSON;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This is a REST API communication client. 
@@ -72,7 +72,7 @@ public class TDengineHttpClient {
 
     private RequestConfig defaultRequestConfig = null;
     private static final Logger log = LoggerFactory.getLogger(TDengineHttpClient.class);
-    private HashMap<String, String> deviceMap = new HashMap<String, String>(); 
+    private ConcurrentHashMap<String, String> deviceMap = new ConcurrentHashMap<String, String>(); 
 
     public TDengineHttpClient(final String host, final int port, final String username, final String password,
             final int connectTimeout, final String database, final String tablePrefix) throws Exception {
@@ -136,7 +136,7 @@ public class TDengineHttpClient {
         // Create database.
         createDatabase();
 
-        if(tableExists(database + "." + tablePrefix)) {
+        if(tableExists(tablePrefix)) {
             loadDevices();
         } else {
             createSuperTable();
@@ -252,7 +252,7 @@ public class TDengineHttpClient {
             final int statusCode = response.getStatusLine().getStatusCode();
             final HttpEntity entity = response.getEntity();
             final String result = EntityUtils.toString(entity, defaultEncode);
-            log.info("Execute SQL statement: {} Result: {}", sqlStatement, result);
+            // log.info("Execute SQL statement: {} Result: {}", sqlStatement, result);
             if (200 == statusCode) {
                 return result;
             }

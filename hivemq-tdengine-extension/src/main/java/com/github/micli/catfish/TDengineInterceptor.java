@@ -26,52 +26,70 @@
 package com.github.micli.catfish;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.extension.sdk.api.async.Async;
+import com.hivemq.extension.sdk.api.async.TimeoutFallback;
 import com.hivemq.extension.sdk.api.client.parameter.ClientInformation;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.parameter.PublishInboundInput;
 import com.hivemq.extension.sdk.api.interceptor.publish.parameter.PublishInboundOutput;
 import com.hivemq.extension.sdk.api.packets.publish.ModifiablePublishPacket;
+import com.hivemq.extension.sdk.api.services.Services;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Base64;
+import java.util.concurrent.CompletableFuture;
 import java.nio.ByteBuffer;
+import java.time.Duration;
 
 /**
  * This is a very simple {@link PublishInboundInterceptor}, 
- * it retrieve every mqtt message 
+ * it retrieve every mqtt message with async action
  * and save data to TDengine by REST API.
- *
+ * reference document: https://www.hivemq.com/docs/hivemq/4.4/extensions/interceptors.html#publish-inbound-modify-async
  * @author Michael Li
  * @since 0.1 
  */
 public class TDengineInterceptor implements PublishInboundInterceptor {
 
+    private static final Logger log = LoggerFactory.getLogger(TDengineHttpClient.class);
     final private Base64.Encoder encoder = Base64.getEncoder();
 
     @Override
     public void onInboundPublish(final @NotNull PublishInboundInput publishInboundInput,
             final @NotNull PublishInboundOutput publishInboundOutput) {
         final ModifiablePublishPacket publishPacket = publishInboundOutput.getPublishPacket();
-        final ClientInformation clientInformation = publishInboundInput.getClientInformation();
         if(!publishPacket.getPayload().isPresent())
-                return;
+            return; // Ignore no data calls.
         
-        try {
-            String msgid = String.valueOf(publishPacket.getPacketId());
-            String topic = publishPacket.getTopic();
-            String deviceId = clientInformation.getClientId();
-            ByteBuffer buff = publishPacket.getPayload().get();
-            String payLoad = "";
-            byte[] bytes = new byte[buff.remaining()];
-            buff.get(bytes);
-            payLoad = encoder.encodeToString(bytes);
-            // String payLoad = encoder.encodeToString(buff.get().array().clone());
-            int qos = publishPacket.getQos().getQosNumber();
-            // Save data to TDengine.
-            TDengineMain.client.WriteData(msgid, deviceId, topic, qos, payLoad);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-    }
+        final Async<PublishInboundOutput> outputAsyncResult =
+            publishInboundOutput.async(Duration.ofSeconds(8), TimeoutFallback.FAILURE); // Default timeout is 8 secs.
 
+            final CompletableFuture<?> task = Services.extensionExecutorService().submit(() -> {
+
+                final ClientInformation clientInformation = publishInboundInput.getClientInformation();
+                try {
+                    String msgid = String.valueOf(publishPacket.getPacketId());
+                    String topic = publishPacket.getTopic();
+                    String deviceId = clientInformation.getClientId();
+                    ByteBuffer buff = publishPacket.getPayload().get();
+                    byte[] bytes = new byte[buff.remaining()];
+                    buff.get(bytes);
+                    String payLoad = encoder.encodeToString(bytes);
+                    int qos = publishPacket.getQos().getQosNumber();
+                    // Save data to TDengine.
+                    TDengineMain.client.WriteData(msgid, deviceId, topic, qos, payLoad);
+                } catch (Exception e) {
+                    log.error("Error occured onInboundPublish: ", e);
+                }
+            });
+        // Completion callback.
+        task.whenComplete((ignored, throwable) -> {
+            if (null != throwable) {
+                log.error("Error occured during async action: ", throwable);
+            }
+            outputAsyncResult.resume();
+        });        
+    }
 }
