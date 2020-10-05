@@ -159,7 +159,8 @@ public class TDengineHttpClient {
             String timeString = dateFormat.format(now);  
             String sqlInsert = String.format(TDengineSQLCmdList.getGetInsert(), 
             database, tableName, timeString, msgid, topic, qos, payLoad);
-            executeSQL(sqlInsert);
+            // executeSQL(sqlInsert);
+            executeSQLAsync(sqlInsert); // Call HTTP async.
         } catch (Exception ex) {
             log.error("writeData error: {}", ex);
         }
@@ -276,6 +277,7 @@ public class TDengineHttpClient {
                 .setPath("/rest/sql").build();
         final CloseableHttpAsyncClient client = HttpAsyncClients.custom().setDefaultRequestConfig(defaultRequestConfig)
                 .build();
+        client.start();
         // Post Url
         final HttpPost thePost = new HttpPost(uri);
         // Headers
@@ -287,9 +289,8 @@ public class TDengineHttpClient {
             // Send request async.
             client.execute(thePost, new HttpAsyncResponseImpl(client, sqlStatement));
         } catch (final Exception ex) {
+            log.error("Async HTTP request error: ", ex);
             return;
-        } finally {
-            client.close();
         }
     }
 
@@ -310,16 +311,17 @@ public class TDengineHttpClient {
             try {
                 // Retrieve status code from response line.
                 final int statusCode = response.getStatusLine().getStatusCode();
-                if (200 == statusCode) {
-                    // final HttpEntity entity = response.getEntity();
-                    // final String result = EntityUtils.toString(entity, defaultEncode);
-                    // Close request object.
-                    requestClient.close();
+                // log.info("Execute SQL statement: {} Result: {}", sqlStatement, result);
+                if(200 != statusCode) {
+                    final HttpEntity entity = response.getEntity();
+                    final String result = EntityUtils.toString(entity, defaultEncode);
+                    log.warn("Async execute SQL statement: {} got bad result: {}", sqlStatement, result);
                 }
-            } catch (Exception e) {
-
-            } finally {
+                // Close request object.
+                requestClient.close();
                 HttpClientUtils.closeQuietly(response);
+            } catch (Exception e) {
+                log.error("Async execute SQL statement: {} got error: {}", sqlStatement, e);
             }
         }
 
@@ -342,7 +344,7 @@ public class TDengineHttpClient {
                 log.info("SQL Statement: " + sqlStatement + " has been failed.");
                 log.error("Asyn http resquest failed: {}", e.getMessage(), e);
             } catch(Exception ex) {
-                log.error("Async http client close error: {}", e.getMessage(), e);
+                log.error("Async http client close error: {}", e.getMessage(), ex);
             }
         }
 

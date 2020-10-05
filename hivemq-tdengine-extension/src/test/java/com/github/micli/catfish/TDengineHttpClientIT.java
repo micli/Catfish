@@ -57,12 +57,11 @@ public final class TDengineHttpClientIT {
     @Timeout(value = 1, unit = TimeUnit.MINUTES)
     void test_sql_execute_async() throws Exception {
         TDengineHttpClient client = new TDengineHttpClient(host, port, user, pwd, timeout, database, prefix);
-        Date date = new Date();  
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
-        String timeString = dateFormat.format(date);  
-        String sql = String.format("INSERT INTO testdb.device_1 VALUES('%s', 'device-1', 'general', 1, 'aaa');", timeString);
-        // client.executeSQLAsync(sql);
-        client.executeSQL(sql);
+        // Date date = new Date();  
+        // DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+        // String timeString = dateFormat.format(date);  
+        String sql = "SELECT TBNAME FROM testdb.mqtt_msg;";
+        client.executeSQLAsync(sql);
         assertTrue(true); 
     }
 
@@ -126,6 +125,5 @@ public final class TDengineHttpClientIT {
         ByteBuffer test = ByteBuffer.wrap(bytes);
         String result = Base64.getEncoder().encodeToString(test.array());
         assertTrue(result.length() > 0);
-    }
-    
+    }    
 }
