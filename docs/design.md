@@ -30,7 +30,7 @@ TDengine extension will use device id as sub table name. If a device id occurs f
 
 As we know, HiveMQ calls PublishInboundInterceptor::onInboundPublish() when receives a MQTT data. If onInboundPublish() costs long time to handle data, is that will affect HiveMQ performance?
 
-By debugging code of HiveMQ, you can notice that HiveMQ uses parallel library to call onInboundPublish() function in each time. This is very useful for high I/O scenarios.
+By debugging code of HiveMQ, you can notice that HiveMQ uses parallel library to call onInboundPublish() function in each time. This is very useful for high I/O scenarios. 
 
 ```java
 ... Call stack top ...
@@ -47,7 +47,7 @@ By debugging code of HiveMQ, you can notice that HiveMQ uses parallel library to
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:834)
 ```
-It doesn't mean that we don't need async I/O to improve performance. The next step of code improvement is change synchronized call to asynchronous call.
+It doesn't mean that we don't need async I/O to improve performance. The next step of code improvement is change synchronized call to asynchronous call. At ver.1.1.0, TDengine extension has been impletmented asynchronus handler in PublishInboundInterceptor::onInboundPublish() method. That will reduce time latency between MQTT publishers and MQTT subscribers. At ver.1.1.2, TDengine extension has been replaced async HTTP access (executeSQLAsync) with sync HTTP method(executeSQL). I don't know whether it's effectively improved I/O. Because all workloads will be moved to TDengine services.
 
 ## Automatically create database objects
 
@@ -67,4 +67,3 @@ SELECT deviceId, TBNAME FROM [super table]
 This mapping data will be loaded into a hash map object in Java. When MQTT data arrived to extension, it will check hash map to retrieve table name for data insert. If new device added at extension runtime, TDengine extension will automatically create sub table and add deive id/ table mapping into hash table.
 
 With above functionals, that can support super table/sub table model for store data in TDengine database.
-

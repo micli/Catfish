@@ -13,7 +13,7 @@
 
 *Type*: Data Persistent Extension
 
-*Version*: 1.0
+*Version*: 1.1.0
 
 *License*: MIT
 
@@ -30,7 +30,7 @@ The TDengineHttpClient implements REST API communication to TDengine service.
 
 . Clone this repository into a Java 11 maven project.
 . Run `mvn package` goal from Maven to build the extension.
-. Move the file: "target/hivemq-tdengine-extension-0.1-distribution.zip" to the directory: "HIVEMQ_HOME/extensions"
+. Move the file: "target/hivemq-tdengine-extension-1.1-distribution.zip" to the directory: "HIVEMQ_HOME/extensions"
 . Unzip the file.
 . Configure correct TDengine connect information in TDengine.properties.
 . Start HiveMQ by HIVEMQ_HOME/bin/run.sh.

@@ -310,13 +310,10 @@ public class TDengineHttpClient {
 
             try {
                 // Retrieve status code from response line.
-                final int statusCode = response.getStatusLine().getStatusCode();
-                // log.info("Execute SQL statement: {} Result: {}", sqlStatement, result);
-                if(200 != statusCode) {
-                    final HttpEntity entity = response.getEntity();
-                    final String result = EntityUtils.toString(entity, defaultEncode);
-                    log.warn("Async execute SQL statement: {} got bad result: {}", sqlStatement, result);
-                }
+                // final int statusCode = response.getStatusLine().getStatusCode();
+                final HttpEntity entity = response.getEntity();
+                final String result = EntityUtils.toString(entity, defaultEncode);
+                log.info("Execute SQL statement: {} Result: {}", sqlStatement, result);
                 // Close request object.
                 requestClient.close();
                 HttpClientUtils.closeQuietly(response);

@@ -6,7 +6,7 @@
 
 与TDengine服务通信的方式有两种：JDBC和RESTful API。 当前，该扩展使用RESTful API 进行连接。
 
-原因是方便用户的部署操作。 如果使用JDBC方式连接，除了需要部署扩展外，还需要部署taos.dll / libtaos.so文件。 在典型情况下，TDengine服务不会与HiveMQ托管在同一服务器/虚拟机/ docker映像上。因此，JDBC 所需要的文件需要单独部署在HiveMQ 服务所在的环境中。这意味着用户必须手动复制taos.dll / libtaos.so文件。 详情请查看 [官方文档](https://www.taosdata.com/cn/documentation/connector-java/).
+原因是方便用户的部署操作。 如果使用JDBC方式连接，除了需要部署扩展外，还需要部署taos.dll/libtaos.so文件。 在典型情况下，TDengine服务不会与HiveMQ托管在同一服务器/虚拟机/docker映像上。因此，JDBC所需要的文件需要单独部署在HiveMQ 服务所在的环境中。这意味着用户必须手动复制taos.dll/libtaos.so文件。详情请查看 [官方文档](https://www.taosdata.com/cn/documentation/connector-java/).
 
 使用RESTful API易于部署，用户不需要部署其他操作。
 
@@ -41,7 +41,7 @@
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:834)
 ```
-这并不意味着我们不需要异步I / O来提高性能。 代码改进的下一步是将同步调用更改为异步调用。
+这并不意味着我们不需要异步I/O来提高性能。 代码改进的下一步是将同步调用更改为异步调用。在1.1.0版中，TDengine扩展已在PublishInboundInterceptor::onInboundPublish() 方法中实现了异步处理程序。这将减少MQTT发布者和MQTT订阅者之间的时间延迟。在1.1.2版中，TDengine扩展已由同步HTTP方法(executeSQL)代替了异步HTTP访问(executeSQLAsync)。我不知道它是否有效地改善了I/O。因为所有工作负载都将移至TDengine服务。
 
 ## 自动创建数据库对象
 
