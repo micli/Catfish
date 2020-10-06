@@ -347,12 +347,30 @@ public class TDengineHttpClient {
 
     }
 
-    private String getTableNameFromDeviceId(String deviceId) {
+    public String getTableNameFromDeviceId(String deviceId) {
         return deviceId.replace('+', '_')
         .replace('-', '_')
         .replace('/', '_')
         .replace(':', '_')
         .replace('|', '_');
+
+        // It seems below code is slower than above.
+        // byte[] array = deviceId.getBytes();
+        // int len = array.length;
+        // if(len > 64)
+        //     len = 64; // the max length of table name is 64.
+        // byte[] newArr = new byte[len];
+        // for(int i = 0; i < len; i++) {
+        //     if((32 <= array[i] && 47 >= array[i]) || 
+        //     (58 <= array[i] && 64 >= array[i]) || 
+        //     (91 <= array[i] && 96 >= array[i])) {
+        //         newArr[i] = 95;
+        //     }
+        //     else {
+        //         newArr[i] = array[i];
+        //     }
+        // }
+        // return new String(newArr);
     }
 
 }

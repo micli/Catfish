@@ -4,6 +4,8 @@ package com.github.micli.catfish;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+import ch.qos.logback.core.util.Duration;
+
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
@@ -17,6 +19,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 public final class TDengineHttpClientIT {
 
@@ -125,5 +129,18 @@ public final class TDengineHttpClientIT {
         ByteBuffer test = ByteBuffer.wrap(bytes);
         String result = Base64.getEncoder().encodeToString(test.array());
         assertTrue(result.length() > 0);
-    }    
+    }   
+    
+    @Test
+    @Timeout(value = 1, unit = TimeUnit.MINUTES)
+    void test_getTableNameFromDeviceId() throws Exception {
+        TDengineHttpClient client = new TDengineHttpClient(host, port, user, pwd, timeout, database, prefix);
+
+        String testString = "test-device/1-2/@\"building-1\"";
+        Instant start = Instant.now();
+        String tablename = client.getTableNameFromDeviceId(testString);
+        Instant end = Instant.now();
+        long value = ChronoUnit.MICROS.between(start, end);
+        assertTrue(tablename.equals("test_device_1_2___building_1_"));
+    }  
 }
