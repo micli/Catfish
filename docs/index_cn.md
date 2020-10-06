@@ -9,7 +9,7 @@ For English user, please read [English](index.md).
 Content:
 
 + [设计文档](design_cn.md)
-+ [测试报告](testing_cn.md)
++ [测试报告](testing.md)
 
 ## 部署插件
 
