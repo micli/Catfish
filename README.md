@@ -8,8 +8,8 @@ Documentation is [**HERE**](docs/index.md).
 
 ## Deployment
 
-1. Please download hivemq-tdengine-extension-1.0-distribution.zip from releases.
-2. Unzip the file: hivemq-tdengine-extension-1.0-distribution.zip on local folder.
+1. Please download hivemq-tdengine-extension-1.1-distribution.zip from [releases](https://github.com/micli/Catfish/releases/download/v1.1.0/hivemq-tdengine-extension-1.1-distribution.zip).
+2. Unzip the file: hivemq-tdengine-extension-1.1-distribution.zip on local folder.
 3. Put the whole folder into {HIVEMQHOME}/extensions/ as below:
 ![extensions folder layout](docs/images/extension-folder.png)
 4. Create a configuration file named "TDengine.properties" under hivemq-tdengine-extension. The template as below:
