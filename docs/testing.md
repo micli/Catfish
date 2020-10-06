@@ -22,13 +22,14 @@ The first one installed mqttloader, HiveMQ and hivemq-tdengine-extension. The se
 
 Below list shows you the software versions:
 
++ hivemq-tdengine-extension: v1.1.0
 + mqttloader: v0.72
 + HiveMQ: v4.4.1
 + TDengine: v.2.0.3
 
 Since it's a dedicate on I/O performance testing, the environment ignored latency between MQTT client and HiveMQ. The mqttloader will raise connecting request on the local of HiveMQ service.
 
-## Performance report
+## Performance Testing
 
 For the reviewer who concern about performance should care about subscriber informations.
 
