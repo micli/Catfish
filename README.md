@@ -27,6 +27,19 @@ database:testdb
 reportingInterval:1
 connectTimeout:5000
 ```
+|Properties|Meaning|
+|-|-|
+|host| The TDengine server name / IP address.|
+|port|TDengine service listening port, default is 6041.|
+|user|The TDengine db user name, usually the user should has write permissions.|
+|password|The password of db login user.|
+|prefix|The name of super table in TDengine.|
+|database|The name of TDengine database.|
+|reportingInterval|The performance metric report intervals. It's not in use.|
+|connectTimeout|HTTP connect timeout in milliseconds.|
+
+***At least, you should specify TDengine server host/IP address. Other settings will be set to default value.***
+
 5. start HiveMQ service by {HIVEMQHOME}/bin/run.sh
 
 Notes:
@@ -48,7 +61,7 @@ There are two ways to extend I/O performance:
 
 ### Separate database into multiple files
 
-You can specified how much time range into a database files when Create database. The syntax as below:
+If you want to improve I/O performance of database, you can specified how much time range into a database files when Create database. Then you can put database name into TDengine.properties file. The syntax as below:
 
 ```sql
 CREATE DATABASE demo DAYS 10 CACHE 16000 ROWS 2000 
@@ -59,7 +72,7 @@ CREATE DATABASE demo DAYS 10 CACHE 16000 ROWS 2000
 
 As an administrator, you can specify days, keep, rows parameters to get best performance when create database.
 
-Please don't worry about TDengine exetsion overrwites these configurations. Because TDengine extension use "CREATE DATABASE IF NOT EXISTS " clause. It won't affect existing database.
+Please don't worry about TDengine exetsion changes these configurations. Because TDengine extension use "CREATE DATABASE IF NOT EXISTS " clause. It won't affect existing database.
 
 ### Extends REST APIs serve threads number
 
