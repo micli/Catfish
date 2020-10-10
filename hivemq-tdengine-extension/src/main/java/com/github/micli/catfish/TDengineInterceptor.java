@@ -64,7 +64,7 @@ public class TDengineInterceptor implements PublishInboundInterceptor {
             return; // Ignore no data calls.
         
         final Async<PublishInboundOutput> outputAsyncResult =
-            publishInboundOutput.async(Duration.ofSeconds(8), TimeoutFallback.FAILURE); // Default timeout is 8 secs.
+            publishInboundOutput.async(Duration.ofSeconds(30), TimeoutFallback.FAILURE); // Default timeout is 30 secs.
 
             final CompletableFuture<?> task = Services.extensionExecutorService().submit(() -> {
 
