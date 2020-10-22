@@ -47,24 +47,9 @@ TDengine扩展需要访问位于TDengine服务器上位于6041端口的TDengine 
 
 ## 调整I/O 性能
 
-有两种方法可以扩展I/O性能：
-+ 将数据库分成多个文件。
+有一种方法可以扩展I/O性能：
+
 + 扩展RESTful API服务线程数。
-
-### 将数据库分成多个文件
-
-您可以在创建数据库时指定存入单个数据库文件的时间范围。语法如下：
-
-```sql
-CREATE DATABASE demo DAYS 10 CACHE 16000 ROWS 2000 
-```
-+ days: 数据文件涵盖的天数
-+ keep: 保留数据的天数
-+ rows: 数据文件中一个块中记录的行数。
-
-作为管理员，您可以指定天数，保留数，行数参数，以在创建数据库时获得最佳性能。
-
-请不要担心TDengine 会修改这些配置。 因为TDengine扩展使用“ CREATE DATABASE IF NOT EXISTS”子句。 它不会影响现有的数据库。
 
 ### 改善REST API服务线程数
 

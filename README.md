@@ -55,28 +55,13 @@ By default, the HiveMQ service exposes 1883 to recevied MQTT traffic, please ena
 
 ## Tuning I/O Performance
 
-There are two ways to extend I/O performance:
-+ Separate database into multiple files.
+There is one way to extend I/O performance:
+
 + Extends REST APIs serve threads number.
-
-### Separate database into multiple files
-
-If you want to improve I/O performance of database, you can specified how much time range into a database files when Create database. Then you can put database name into TDengine.properties file. The syntax as below:
-
-```sql
-CREATE DATABASE demo DAYS 10 CACHE 16000 ROWS 2000 
-```
-+ days: number of days to cover for a data file
-+ keep: number of days to keep the data
-+ rows: number of rows of records in a block in data file.
-
-As an administrator, you can specify days, keep, rows parameters to get best performance when create database.
-
-Please don't worry about TDengine exetsion changes these configurations. Because TDengine extension use "CREATE DATABASE IF NOT EXISTS " clause. It won't affect existing database.
 
 ### Extends REST APIs serve threads number
 
-The TDengine extension uses REST APIs to communicate to TDengine service. By default, there are only 2 threads serve HTTP traffic. If you have a heavy MQTT traffic, please add the number of httMaxThreads.
+The TDengine extension uses REST APIs to communicate to TDengine service. By default, there are only 2 threads serve HTTP traffic. If you have a heavy MQTT traffic, please increase the number of httMaxThreads.
 
 ![taos.cfg](docs/images/tsos.cfg.png)
 

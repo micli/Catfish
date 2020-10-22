@@ -47,24 +47,9 @@ By default, the HiveMQ service exposes 1883 to recevied MQTT traffic, please ena
 
 ## Tuning I/O Performance
 
-There are two ways to extend I/O performance:
-+ Separate database into multiple files.
+There is one way to extend I/O performance:
+
 + Extends REST APIs serve threads number.
-
-### Separate database into multiple files
-
-You can specified how much time range into a database files when Create database. The syntax as below:
-
-```sql
-CREATE DATABASE demo DAYS 10 CACHE 16000 ROWS 2000 
-```
-+ days: number of days to cover for a data file
-+ keep: number of days to keep the data
-+ rows: number of rows of records in a block in data file.
-
-As an administrator, you can specify days, keep, rows parameters to get best performance when create database.
-
-Please don't worry about TDengine exetsion overrwites these configurations. Because TDengine extension use "CREATE DATABASE IF NOT EXISTS " clause. It won't affect existing database.
 
 ### Extends REST APIs serve threads number
 
